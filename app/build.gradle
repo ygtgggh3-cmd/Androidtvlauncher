@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.perrinho.launcher'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.perrinho.launcher'
+        minSdk 19          // Android 4.4+: cubre TV boxes muy viejos
+        targetSdk 33
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            // R8 reduce el APK; se firma con la llave debug para poder instalarlo directo
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+// Sin dependencias a propósito: nada de AndroidX, Compose ni Leanback.
+// Menos clases cargadas = menos RAM y arranque más rápido.
+dependencies {
+}

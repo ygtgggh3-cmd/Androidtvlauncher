@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Launcher TV Lite</string>
+    <string name="settings">Ajustes</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="open">Abrir</string>
+    <string name="app_info">Información de la app</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="cant_open">No se pudo abrir</string>
+</resources>
