@@ -78,6 +78,7 @@ public class MainActivity extends Activity {
     private MediaPage media;
     private TextView clock;
     private TextView dateView;
+    private TextView defaultBtn;
     private SimpleDateFormat dayFormat;
 
     private int page = -1;
@@ -180,6 +181,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateDefaultButton();
         if (page == PAGE_HOME && homeDirty && !apps.isEmpty()) {
             buildHome();
         }
@@ -335,6 +337,8 @@ public class MainActivity extends Activity {
         header.addView(time, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        defaultBtn = Ui.pill(this, getString(R.string.make_default), v -> makeDefault());
+        header.addView(defaultBtn, pillParams());
         header.addView(Ui.pill(this, getString(R.string.wifi),
                 v -> openSettings(Settings.ACTION_WIFI_SETTINGS)), pillParams());
         header.addView(Ui.pill(this, getString(R.string.settings),
@@ -651,6 +655,40 @@ public class MainActivity extends Activity {
         i.setComponent(e.cn);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         startSafely(i);
+    }
+
+    private boolean isDefaultHome() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo ri = pm.resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY);
+        return ri != null && ri.activityInfo != null
+                && getPackageName().equals(ri.activityInfo.packageName);
+    }
+
+    /** El botón solo se muestra mientras este launcher no sea el predeterminado. */
+    private void updateDefaultButton() {
+        defaultBtn.setVisibility(isDefaultHome() ? View.GONE : View.VISIBLE);
+    }
+
+    private void makeDefault() {
+        // 1) Pantalla de Ajustes para elegir la app de inicio; 2) apps predeterminadas;
+        // 3) lanzar Inicio para que el sistema pregunte "Siempre / Solo una vez"
+        String[] actions = { Settings.ACTION_HOME_SETTINGS, Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS };
+        for (String a : actions) {
+            try {
+                Intent i = new Intent(a);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                Toast.makeText(this, R.string.choose_this_launcher, Toast.LENGTH_LONG).show();
+                return;
+            } catch (Exception ignored) {
+            }
+        }
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startSafely(home);
+        Toast.makeText(this, R.string.choose_always, Toast.LENGTH_LONG).show();
     }
 
     private void openSettings(String action) {

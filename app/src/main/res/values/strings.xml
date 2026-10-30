@@ -9,6 +9,9 @@
     <string name="recents">Recientes</string>
     <string name="settings">Ajustes</string>
     <string name="wifi">Wi-Fi</string>
+    <string name="make_default">Hacer predeterminado</string>
+    <string name="choose_this_launcher">Elige «Launcher TV Lite» como pantalla de inicio</string>
+    <string name="choose_always">Elige «Launcher TV Lite» y pulsa «Siempre»</string>
 
     <string name="open">Abrir</string>
     <string name="pin">Anclar a Inicio</string>
